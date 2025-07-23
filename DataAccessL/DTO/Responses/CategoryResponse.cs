@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Shahd_DataAccessL.Models
+namespace Shahd_DataAccessL.DTO.Responses
 {
-    public class Category :BaseModel
+  public  class CategoryResponse
     {
         public string Name { get; set; }
+        public int Id { get; set; }
     }
 }
