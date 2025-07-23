@@ -1,0 +1,6 @@
+@Shahd_PresentationL_HostAddress = http://localhost:5128
+
+GET {{Shahd_PresentationL_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
