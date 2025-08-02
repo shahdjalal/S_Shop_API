@@ -10,6 +10,7 @@ namespace Shahd_DataAccessL.Data
 {
   public  class ApplicationDbContext : DbContext
     {
+        public DbSet<Brand> Brands { get; set; }
         public DbSet<Category> Categoties { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
       : base(options)
