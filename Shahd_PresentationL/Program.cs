@@ -1,10 +1,12 @@
 
 using Microsoft.EntityFrameworkCore;
-using Shahd_BusniessLL.Services;
 using Shahd_DataAccessL.Data;
-using Shahd_DataAccessL.Repositories;
 using Scalar;
 using Scalar.AspNetCore;
+using Shahd_DataAccessL.Repositories.Classes;
+using Shahd_DataAccessL.Repositories.Interfaces;
+using Shahd_BusniessLL.Services.Classes;
+using Shahd_BusniessLL.Services.Interfaces;
 namespace Shahd_PresentationL
 {
     public class Program
@@ -21,6 +23,8 @@ namespace Shahd_PresentationL
             builder.Services.AddOpenApi();
             builder.Services.AddScoped<ICategoryRepo,CategoryRepo>();
             builder.Services.AddScoped<ICategoryService,CategoryService>();
+            builder.Services.AddScoped<IBrandRepo, BrandRepo>();
+            builder.Services.AddScoped<IBrandService, BrandService>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
