@@ -4,13 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Shahd_DataAccessL.Models
+namespace Shahd_DataAccessL.DTO.Responses
 {
-    public class Brand :BaseModel
+  public  class ProductResponse
     {
-
         public string Name { get; set; }
-
-        public List<Product> Products { get; set; } = new List<Product>();
+        public string Description { get; set; }
     }
 }
