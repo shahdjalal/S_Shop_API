@@ -97,17 +97,13 @@ namespace Shahd_BusniessLL.Services.Classes
 
             if (Result.Succeeded)
             {
-                if (string.Equals(registerRequest.Email, "shahd@gmail.com", StringComparison.OrdinalIgnoreCase))
-                {
-                    await _userManager.AddToRoleAsync(user, "Admin"); // ← هون
-                }
 
 
 
 
 
 
-                var token =   await _userManager.GenerateEmailConfirmationTokenAsync(user);
+             var token =   await _userManager.GenerateEmailConfirmationTokenAsync(user);
                 var escapeToken = Uri.EscapeDataString(token);
                 var emailUrl = $"https://localhost:7224/api/identity/Account/confirmEmail?token={escapeToken}&userId={user.Id}";
           await _emailSender.SendEmailAsync(user.Email, "welcome",$"<h1> Hello {user.UserName} </h1>" +
@@ -137,7 +133,7 @@ namespace Shahd_BusniessLL.Services.Classes
 
             foreach (var role in Role)
             {
-                Claims.Add(new Claim("Role", role));
+                Claims.Add(new Claim(ClaimTypes.Role, role));
             }
 
 

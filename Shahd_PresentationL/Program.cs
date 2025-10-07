@@ -32,9 +32,11 @@ namespace Shahd_PresentationL
             builder.Services.AddScoped<ICategoryRepo,CategoryRepo>();
             builder.Services.AddScoped<ICategoryService,CategoryService>();
             builder.Services.AddScoped<IProductService, ProductService>();
+            builder.Services.AddScoped<ICartService, CartService>();
             builder.Services.AddScoped<IProductRepo, ProductRepo>();
             builder.Services.AddScoped<IFileService, FileService>();
             builder.Services.AddScoped<IBrandRepo, BrandRepo>();
+            builder.Services.AddScoped<ICartRepo, CartRepo>();
             builder.Services.AddScoped<IBrandService, BrandService>();
             builder.Services.AddScoped<ISeedData, SeedData>();
             builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
@@ -70,7 +72,7 @@ namespace Shahd_PresentationL
             };
         });
 
-
+            builder.Services.AddAuthorization();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -90,6 +92,7 @@ namespace Shahd_PresentationL
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.UseStaticFiles();
 
             app.MapControllers();
 
