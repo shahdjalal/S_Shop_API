@@ -361,3 +361,8 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# Ignore sensitive config files
+Shahd_PresentationL/appsettings.json
+Shahd_PresentationL/appsettings.Development.json
+Shahd_PresentationL/appsettings.Production.json
