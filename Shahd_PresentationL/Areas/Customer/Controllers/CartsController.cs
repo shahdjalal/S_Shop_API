@@ -3,14 +3,18 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Shahd_BusniessLL.Services.Interfaces;
 using Shahd_DataAccessL.DTO.Requests;
+using Shahd_DataAccessL.DTO.Responses;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace Shahd_PresentationL.Areas.Customer.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[area]/[controller]")]
     [ApiController]
     [Area("Customer")]
     [Authorize(Roles = "Customer")]
+
+    //[AllowAnonymous]
     public class CartsController : ControllerBase
     {
         private readonly ICartService _cartService;
@@ -22,13 +26,26 @@ namespace Shahd_PresentationL.Areas.Customer.Controllers
 
         [HttpPost("")]
 
-        public IActionResult AddToCart(CartRequest request)
+        public async Task< IActionResult> AddToCartAsync(CartRequest request)
         {
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var result = _cartService.AddToCart(request, userId);
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized("UserId from token is null");
+            var result = await _cartService.AddToCartAsync(request, userId);
 
-            return result ? Ok() : BadRequest();
+            return  result ? Ok() : BadRequest();
+
+        }
+
+        [HttpGet("")]
+        public async Task<IActionResult> GetUserCartAsync()
+        {
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var result =await _cartService.CartsummaryResponseAsync(userId);
+
+            return  Ok(result) ;
 
         }
     }

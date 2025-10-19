@@ -8,7 +8,7 @@ namespace Shahd_DataAccessL.DTO.Requests
 {
    public class CartRequest
     {
-        public int ProuductId { get; set; }
+        public int ProductId { get; set; }
 
     }
 }

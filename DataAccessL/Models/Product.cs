@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Shahd_DataAccessL.DTO.Responses;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,5 +23,8 @@ namespace Shahd_DataAccessL.Models
         public Category Category { get; set; }
         public int? BrandId { get; set; }
         public Brand? Brand { get; set; }
+
+        public List<ProductImage> SubImages { get; set; }=new List<ProductImage>();
+        public List<Review> Reviews { get; set; } = new List<Review>();
     }
 }

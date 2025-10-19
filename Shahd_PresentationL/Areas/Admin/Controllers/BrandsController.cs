@@ -37,9 +37,9 @@ namespace Shahd_PresentationL.Areas.Admin.Controllers
 
     [HttpPost("")]
     [Authorize]
-    public IActionResult Create([FromBody] BrandRequest request)
+    public IActionResult Create([FromForm] BrandRequest request)
     {
-        var id = _brandService.Create(request);
+        var id = _brandService.CreateFile(request);
         return CreatedAtAction(nameof(GetAll), new { id }, new { message = "ok" });
     }
 

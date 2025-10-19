@@ -44,8 +44,8 @@ namespace Shahd_DataAccessL.Utils
             if (! await _context.Brands.AnyAsync())
             {
                await _context.Brands.AddRangeAsync(
-                    new Brand { Name = "Samsung" },
-                     new Brand { Name = "Apple" }
+                    new Brand { Name = "Samsung" , Image="samsung.png"},
+                     new Brand { Name = "Apple", Image = "apple.png" }
 
                     );
             }
@@ -145,7 +145,7 @@ namespace Shahd_DataAccessL.Utils
                 }
                 else
                 {
-                    // تأكيد الإيميل وإزالة أي Lockout/فشل وتثبيت الـ Normalized
+                 
                     if (!user.EmailConfirmed) user.EmailConfirmed = true;
                     user.LockoutEnabled = false;
                     user.LockoutEnd = null;
@@ -157,7 +157,7 @@ namespace Shahd_DataAccessL.Utils
 
                     await _userManager.UpdateAsync(user);
 
-                    // إعادة ضبط كلمة المرور لقيمة معروفة (تحل مشكلة "invalid email or password")
+                   
                     var token = await _userManager.GeneratePasswordResetTokenAsync(user);
                     var reset = await _userManager.ResetPasswordAsync(user, token, "Pass@212345");
                     if (!reset.Succeeded)
@@ -165,7 +165,7 @@ namespace Shahd_DataAccessL.Utils
                             string.Join("; ", reset.Errors.Select(e => e.Description)));
                 }
 
-                // تأكيد الدور
+                
                 if (!await _userManager.IsInRoleAsync(user, role))
                 {
                     var add = await _userManager.AddToRoleAsync(user, role);
@@ -175,12 +175,12 @@ namespace Shahd_DataAccessL.Utils
                 }
             }
 
-            // 3) المستخدمون المطلوبون (لاحظي: بدون if (!Users.AnyAsync()))
+            
             await EnsureUserAsync("shahd@gmail.com", "sjalal", "shahd jalal", "Admin");
             await EnsureUserAsync("ahmad@gmail.com", "Ahmad", "ahmad jalal", "SuperAdmin");
             await EnsureUserAsync("jana@gmail.com", "jana", "jana jalal", "Customer");
 
-            // تغييرات Identity تتم عبر UserManager/RoleManager، لكن بقاء السطر لا يضر
+         
             await _context.SaveChangesAsync();
         }
 

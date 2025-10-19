@@ -9,5 +9,7 @@ namespace Shahd_DataAccessL.Repositories.Interfaces
 {
    public interface IProductRepo : IGenericRepository<Product>
     {
+       Task DecreaseQuantityAsync(List<(int productId, int quantity)>items);
+        List<Product> GetAllProductsWithImages();
     }
 }

@@ -18,9 +18,9 @@ namespace Shahd_PresentationL.Areas.Identity.Controllers
             _authenticationService = authenticationService;
         }
         [HttpPost("Register")]
-        public async Task<ActionResult<UserResponse>> Register(RegisterRequest registerRequest)
+        public async Task<ActionResult<UserResponse>> Register(RegisterRequest registerRequest, HttpRequest Request)
         {
-            var result = await _authenticationService.RegisterAsync(registerRequest);
+            var result = await _authenticationService.RegisterAsync(registerRequest,  Request);
             return Ok(result);
 
         }

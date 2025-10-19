@@ -1,4 +1,5 @@
 ﻿using Shahd_DataAccessL.DTO.Requests;
+using Shahd_DataAccessL.DTO.Responses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,8 @@ namespace Shahd_BusniessLL.Services.Interfaces
 {
     public interface ICartService
     {
-        bool AddToCart(CartRequest request, string UserId);
+      Task<bool>  AddToCartAsync(CartRequest request, string UserId);
+        Task<CartsummaryResponse> CartsummaryResponseAsync(string UserId);
+        Task <bool> ClearCartAsync(string UserId);
     }
 }

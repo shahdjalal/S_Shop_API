@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 namespace Shahd_DataAccessL.Models
 {
 
-    [PrimaryKey(nameof(ProuductId),nameof(UserId))]
+    [PrimaryKey(nameof(ProductId),nameof(UserId))]
    public class Cart
     {
 
-        public int ProuductId { get; set; }
+        public int ProductId { get; set; }
 
         public Product Product { get; set; }
 

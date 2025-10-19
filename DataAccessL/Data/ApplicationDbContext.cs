@@ -14,8 +14,12 @@ namespace Shahd_DataAccessL.Data
     {
         public DbSet<Brand> Brands { get; set; }
         public DbSet<Category> Categoties { get; set; }
-
+        public DbSet<Product> Products { get; set; }
         public DbSet<Cart> Carts { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItems> OrderItems { get; set; }
+        public DbSet<ProductImage> ProductImages { get; set; }
+        public DbSet<Review> Reviews { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
       : base(options)
         {

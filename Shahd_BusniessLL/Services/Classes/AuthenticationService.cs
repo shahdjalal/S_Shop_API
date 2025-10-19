@@ -1,11 +1,11 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Shahd_DataAccessL.DTO.Requests;
-
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Shahd_BusniessLL.Services.Interfaces;
+using Shahd_DataAccessL.DTO.Requests;
 using Shahd_DataAccessL.DTO.Requests;
 using Shahd_DataAccessL.DTO.Responses;
 using Shahd_DataAccessL.Models;
@@ -24,14 +24,17 @@ namespace Shahd_BusniessLL.Services.Classes
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IConfiguration _configuration;
         private readonly IEmailSender _emailSender;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
         public AuthenticationService(UserManager<ApplicationUser> userManager ,
             IConfiguration configuration ,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            SignInManager<ApplicationUser> signInManager)
         {
             _userManager = userManager;
             _configuration = configuration;
             _emailSender = emailSender;
+            _signInManager = signInManager;
         }
 
         public async Task<UserResponse> LoginAsync(LoginRequest loginRequest)
@@ -43,23 +46,26 @@ namespace Shahd_BusniessLL.Services.Classes
                 throw new Exception("invalid email or password");
             }
 
-            if(!await _userManager.IsEmailConfirmedAsync(user))
+            var result = await _signInManager.CheckPasswordSignInAsync(user, loginRequest.Password, true);
+            if (result.Succeeded)
             {
-                throw new Exception(" please confirm your email ");
+                return new UserResponse
+                {
+                    Token = await CreateTokenAsync(user)
+                };
+            }else if (result.IsLockedOut)
+            {
+                throw new Exception("account is locked");
             }
-
-            var isPassValid = await _userManager.CheckPasswordAsync(user, loginRequest.Password);
-
-            if (!isPassValid)
+            else if (result.IsNotAllowed)
+            {
+                throw new Exception("please confirm your email");
+            }
+            else
             {
                 throw new Exception("invalid email or password");
             }
 
-         
-            return new UserResponse
-            {
-                Token = await CreateTokenAsync(user)
-            };
         }
 
         public async Task<string> confirmEmail(string token ,string userId)
@@ -69,6 +75,8 @@ namespace Shahd_BusniessLL.Services.Classes
             {
                 throw new Exception("user not found");
             }
+
+
 
             var result = await _userManager.ConfirmEmailAsync(user, token);
 
@@ -80,7 +88,7 @@ namespace Shahd_BusniessLL.Services.Classes
             return "email confirmed failed";
 
         }
-        public async Task<UserResponse> RegisterAsync(RegisterRequest registerRequest)
+        public async Task<UserResponse> RegisterAsync(RegisterRequest registerRequest, HttpRequest Request)
         {
 
             //manual mapping
@@ -99,15 +107,18 @@ namespace Shahd_BusniessLL.Services.Classes
             {
 
 
-
-
-
-
              var token =   await _userManager.GenerateEmailConfirmationTokenAsync(user);
                 var escapeToken = Uri.EscapeDataString(token);
-                var emailUrl = $"https://localhost:7224/api/identity/Account/confirmEmail?token={escapeToken}&userId={user.Id}";
-          await _emailSender.SendEmailAsync(user.Email, "welcome",$"<h1> Hello {user.UserName} </h1>" +
-              $"<a href='{emailUrl}'> confirm  </a>");
+              
+               var emailUrl = $"{Request.Scheme}://{Request.Host}/api/identity/Account/confirmEmail?token={escapeToken}&userId={user.Id}";
+
+                await _userManager.AddToRoleAsync(user, "Customer");
+
+
+          await _emailSender.SendEmailAsync(user.Email, "welcome",$"<h1> Hello {user.UserName} </h1>" + $"<a href='{emailUrl}'> confirm  </a>");
+
+
+
                 return new UserResponse()
                 {
                     Token = registerRequest.Email,
@@ -122,30 +133,27 @@ namespace Shahd_BusniessLL.Services.Classes
 
         private async Task<string> CreateTokenAsync(ApplicationUser user)
         {
-            var Claims = new List<Claim>() {
-                new Claim ("Email" , user.Email),
-                 new Claim ("Name" , user.UserName),
-                  new Claim ("Id" , user.Id)
+            var claims = new List<Claim>()
+    {
+        new Claim(JwtRegisteredClaimNames.Email, user.Email),
+        new Claim(JwtRegisteredClaimNames.Name, user.UserName),
+        new Claim(ClaimTypes.NameIdentifier, user.Id), 
+    };
 
-            };
-
-            var Role = await _userManager.GetRolesAsync(user);
-
-            foreach (var role in Role)
+            var roles = await _userManager.GetRolesAsync(user);
+            foreach (var role in roles)
             {
-                Claims.Add(new Claim(ClaimTypes.Role, role));
+                claims.Add(new Claim(ClaimTypes.Role, role));
             }
 
-
-
-            var sercretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("jwtOptions")["secretKey"]));
-            var credentials = new SigningCredentials(sercretKey, SecurityAlgorithms.HmacSha256);
+            var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("jwtOptions")["secretKey"]));
+            var credentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
-                  claims: Claims,
-        expires: DateTime.Now.AddDays(15),
-        signingCredentials: credentials
-                );
+                claims: claims,
+                expires: DateTime.Now.AddDays(15),
+                signingCredentials: credentials
+            );
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }

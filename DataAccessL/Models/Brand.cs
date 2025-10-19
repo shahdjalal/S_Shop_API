@@ -11,6 +11,7 @@ namespace Shahd_DataAccessL.Models
 
         public string Name { get; set; }
 
+        public string Image { get; set; }
         public List<Product> Products { get; set; } = new List<Product>();
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Azure.Core;
+using Microsoft.AspNetCore.Http;
 using Shahd_DataAccessL.DTO.Requests;
 using Shahd_DataAccessL.DTO.Responses;
 using Shahd_DataAccessL.Models;
@@ -12,6 +13,8 @@ namespace Shahd_BusniessLL.Services.Interfaces
 {
   public  interface IProductService : IGenericService<ProductRequest, ProductResponse, Product>
     {
-     Task<int> CreateFile(ProductRequest request);
+     Task<int> CreateProduct(ProductRequest request);
+
+        Task<List<ProductResponse>> GetAllProducts(HttpRequest request, bool onlyActive = false, int pageNumber = 1, int pageSize = 5);
     }
 }

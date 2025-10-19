@@ -10,5 +10,6 @@ namespace Shahd_BusniessLL.Services.Interfaces
    public interface IFileService
     {
         Task<string> UploadAsync(IFormFile file);
+        Task<List<string>> UploadManyAsync(List<IFormFile> files);
     }
 }

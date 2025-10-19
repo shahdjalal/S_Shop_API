@@ -24,13 +24,18 @@ namespace Shahd_PresentationL.Areas.Admin.Controllers
         }
 
         [HttpGet ("")]
-        public IActionResult GetAll() => Ok(_productService.GetAll());
+        public IActionResult GetAll([FromQuery] int pageNumber=1, [FromQuery] int pageSize =5) 
+        {
+        var products= _productService.GetAllProducts(Request, false, pageNumber,pageSize);
+            return Ok(products);
+        
+        } 
 
         [HttpPost("")]
         public async Task<IActionResult> Create([FromForm] ProductRequest request)
         {
          
-            var reasult =await _productService.CreateFile(request);
+            var reasult =await _productService.CreateProduct(request);
             return Ok(reasult);
         }
 

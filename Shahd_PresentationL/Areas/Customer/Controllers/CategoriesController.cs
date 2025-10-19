@@ -9,17 +9,17 @@ namespace Shahd_PresentationL.Areas.Customer.Controllers
     [ApiController]
     [Area("Customer")]
     [Authorize(Roles="Customer")]
-    public class BrandsController : ControllerBase
+    public class CategoriesController : ControllerBase
     {
-        private readonly IBrandService _brandService;
+        private readonly ICategoryService _categoryService;
 
-        public BrandsController(IBrandService brandService)
+        public CategoriesController(ICategoryService categoryService)
         {
-            _brandService = brandService;
+            _categoryService = categoryService;
         }
 
         [HttpGet("")]
-        public IActionResult GetAll() => Ok(_brandService.GetAll(false));
+        public IActionResult GetAll() => Ok(_categoryService.GetAll(false));
 
 
         [HttpGet("{id}")]
@@ -27,9 +27,9 @@ namespace Shahd_PresentationL.Areas.Customer.Controllers
         public IActionResult GetById([FromRoute] int id)
         {
 
-            var brand = _brandService.GetById(id);
-            if (brand is null) return NotFound();
-            return Ok(brand);
+            var category = _categoryService.GetById(id);
+            if (category is null) return NotFound();
+            return Ok(category);
         }
     }
 }

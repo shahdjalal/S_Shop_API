@@ -18,6 +18,8 @@ namespace Shahd_DataAccessL.DTO.Requests
         public int Quantity { get; set; }
 
         public IFormFile MainImage { get; set; }
+
+        public List<IFormFile> SubImages { get; set; }
         public double Rate { get; set; }
 
         public int CategoryId { get; set; }
